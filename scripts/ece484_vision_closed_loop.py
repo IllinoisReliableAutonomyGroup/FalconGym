@@ -71,7 +71,7 @@ class NerfRenderer:
         self.model = pipeline.model 
 
         # 
-        with open("./outputs/0207_circle_day/nerfacto/2025-02-07_145124/dataparser_transforms.json", 'r') as f:
+        with open("./outputs/circle/nerf/circle/dataparser_transforms.json", 'r') as f:
             self.dp_trans_info = json.load(f)
 
     def render(self, cam_state:np.ndarray):
@@ -129,7 +129,7 @@ if __name__ == "__main__":
 
     renderer = NerfRenderer(
 
-        '../outputs/0207_circle_day/nerfacto/2025-02-07_145124/config.yml',
+        '../outputs/circle/nerf/circle/config.yml',
         width = width//scale_factor,
         height = height//scale_factor,
         fx = 546.84164912/scale_factor, 

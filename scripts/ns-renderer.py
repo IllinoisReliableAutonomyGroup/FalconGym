@@ -66,7 +66,7 @@ class NerfRenderer:
 
         # 
         # outputs/1125_multiple_gates/nerfacto/2024-11-25_193859
-        with open("./outputs/0207_circle_day/nerfacto/2025-02-07_145124/dataparser_transforms.json", 'r') as f:
+        with open("./outputs/circle/nerfacto/circle/dataparser_transforms.json", 'r') as f:
             self.dp_trans_info = json.load(f)
 
     def render(self, cam_state:np.ndarray):
@@ -267,7 +267,7 @@ if __name__ == "__main__":
 
     renderer = NerfRenderer(
         #  outputs/1125_multiple_gates/nerfacto/2024-11-25_193859
-        '../outputs/0207_circle_day/nerfacto/2025-02-07_145124/config.yml',
+        '../outputs/circle/nerfacto/circle/config.yml',
         width = width,
         height = height,
         fx = 546.84164912, 
@@ -327,10 +327,12 @@ if __name__ == "__main__":
     # TODO: replace w/ continuous trajectory / RRT Planner
     pose_list = [
         # [1.5, -0.15, 0.4, 0, 0, 3.14], # x, y, z, roll, pitch, yaw, gate_flag
-        [1.5, -0.15, 0.4, 0, 0, -1.57],
-        [-0.25, -1.7, 0.4, 0, 0,-3.14],
-        [-1.8, 0.05, 0.4, 0, 0, 1.57],
-        [-0.05, 1.6, 0.4, 0, 0, 0],
+        # [1.5, -0.15, 0.4, 0, 0, -1.57 + 1.57],
+        # [-0.25, -1.7, 0.4, 0, 0,-3.14 + 1.57],
+        # [-1.8, 0.05, 0.4, 0, 0, 1.57 + 1.57],
+        # [-0.05, 1.6, 0.4, 0, 0, 0 + 1.57],
+
+        [2, 2, 0.4, 0, 0, -2.5]
 
         # [1, 2, 1, 0, 0, -2],
         # [0, 2, 0.8, 0, 0, -1.57],

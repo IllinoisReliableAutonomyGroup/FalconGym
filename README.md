@@ -30,7 +30,7 @@ For more details on FalconGym, please refere to our [paper](https://arxiv.org/ab
 ```
 source ~/miniconda3/bin/activate
 conda activate nerfstudio
-ns-viewer --load-config outputs/circle/config.yml
+ns-viewer --load-config outputs/circle/nerfacto/circle/config.yml
 ```
 Then open the web GUI using the link printed in the terminal
 
@@ -70,12 +70,13 @@ Then open the web GUI using the link printed in the terminal
     - Yan's benchmark for circle track: 100% SR, 2.49cm MGE, 11s LP
 2. Gate Detection
     - Implement `ece484-gate-detection.py`
-    - You should demonstrate at least have around 100 images of different gates in different tracks (obtained from sampling using `ns-rendered.py`) where you can do gate detection perfectly through visual inspection. 
+    - You should demonstrate at least have around 100 images of different gates in different tracks (obtained from sampling using `ns-renderer.py`) where you can do gate detection perfectly through visual inspection. 
     - Yan's benchmark, Check `gate-detect-Yan-example/`
 3. Localization / SLAM
     - You can free-style create or modify anything, the goal is to build on Task 2 to achieve:
         - Input: RGB Image
         - Output: gate relative pose to camera
+    - Reference: [GateNet](https://github.com/open-airlab/GateNet)
 4. Vision-Based Control
-    - Implement `ece484_vision_controller.py`, using your intermediate results/knowledge from Task 2 and Task 3.
+    - Implement `ece484_vision_controller.py`, using your intermediate results/knowledge from Task 2 and Task 
 

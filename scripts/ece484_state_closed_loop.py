@@ -14,6 +14,6 @@ if __name__ == "__main__":
     if cur_step <= MAX_STEP:
         control = state_controller(state)
         state = drone_dynamics(state, control)
-        trajectory.append(state)
+        trajectory.append(state) # N * 7 
     
-    # TODO: log trajectory
+    # TODO: log trajectory into a txt
