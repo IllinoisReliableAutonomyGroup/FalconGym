@@ -44,7 +44,7 @@ Then open the web GUI using the link printed in the terminal
     - Input: camera pose (x, y, z, roll, pitch, yaw)
     - Output: RGB (640x480x3)
     - Note: Modify Track path accordingly
-    - Example: `python3 scripts/ns-render.py` (note the file hierachy)
+    - Example: `python3 scripts/ns_renderer.py` (note the file hierachy)
 3. `ece484-gate-detection.py`:
     - Input: RGB (640x480x3)
     - Output: Mask (640x480)
@@ -60,6 +60,7 @@ Then open the web GUI using the link printed in the terminal
 7.  `ece484-vision-closed-loop.py`
     - Run `ece484-state-controller.py` in closed loop.
     - Output an image folder and a trajectory txt
+8.  `ece484-evaluate.py`
 
 
 ## Tasks for ECE 484 students
