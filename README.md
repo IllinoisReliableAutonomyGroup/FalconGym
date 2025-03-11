@@ -92,3 +92,7 @@ Then open the web GUI using the link printed in the terminal
 
 ### 3. LEMNISCATE TRACK
 ![Lemniscate Track](images/LEMINSCATE.png)
+
+
+## References
+[Summary of the drone project & FalconGym.](https://www.youtube.com/watch?v=TuTugNa39xs)
