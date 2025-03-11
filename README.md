@@ -4,7 +4,9 @@
 
 This repo provides a photorealistic simulation environment (FalconGym), that consists of 3 tracks, namely circle, U-turn and lemniscate (Figure-8). Each track consists of 4 gates arranged in different shapes.
 
-For more details on FalconGym, please refere to our [paper](https://arxiv.org/abs/2503.02198), [Summary of the drone project & FalconGym VIDEO](https://www.youtube.com/watch?v=TuTugNa39xs). To cite it, you can use 
+For more details on FalconGym, please refere to our [paper](https://arxiv.org/abs/2503.02198) and [video](https://www.youtube.com/watch?v=TuTugNa39xs). 
+
+To cite it, you can use 
 ```
 @misc{miao2025zeroshotsimtorealvisualquadrotor,
       title={Zero-Shot Sim-to-Real Visual Quadrotor Control with Hard Constraints}, 
