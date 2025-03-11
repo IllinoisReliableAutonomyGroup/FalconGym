@@ -81,3 +81,14 @@ Then open the web GUI using the link printed in the terminal
 4. Vision-Based Control
     - Implement `ece484_vision_controller.py`, using your intermediate results/knowledge from Task 2 and Task 
 
+
+## Env Explanation
+
+### 1. CIRCLE TRACK
+![Circle Track](images/CIRCLE.png)
+
+### 2. UTURN TRACK
+![UTurn Track](images/UTURN.png)
+
+### 3. LEMNISCATE TRACK
+![Lemniscate Track](images/LEMINSCATE.png)
