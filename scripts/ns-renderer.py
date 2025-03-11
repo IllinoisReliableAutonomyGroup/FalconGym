@@ -14,9 +14,18 @@ import matplotlib.pyplot as plt
 # from ns_dp_info import dpDict
 import json
 from scipy.spatial.transform import Rotation
-
+import argparse
 import time
 import pickle
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="NeRF Renderer for Camera Poses")
+    parser.add_argument("--track_name", type=str, default="circle",
+                        help="give track name")
+
+    return parser.parse_args()
+
 
 class NerfRenderer:
     def __init__(
@@ -30,7 +39,8 @@ class NerfRenderer:
         camera_type = CameraType.PERSPECTIVE,
         metadata = None, 
         cx = None,
-        cy = None
+        cy = None,
+        track = track_path
     ):
         self._script_dir = os.path.dirname(os.path.realpath(__file__))
         self.config_path = Path(os.path.join(self._script_dir, config_path))
@@ -62,9 +72,10 @@ class NerfRenderer:
             eval_num_rays_per_chunk=640*480//4,
             test_mode='inference'
         )
-        self.model = pipeline.model 
+        self.model = pipeline.model
 
-        with open("./outputs/uturn/nerfacto/uturn/dataparser_transforms.json", 'r') as f:
+
+        with open("./outputs/"+track_path+"/nerfacto/"+track_path+"/dataparser_transforms.json", 'r') as f:
             self.dp_trans_info = json.load(f)
 
     def render(self, cam_state:np.ndarray):
@@ -112,13 +123,16 @@ class NerfRenderer:
 
 
 if __name__ == "__main__":
+
+    args = parse_args()
+    track_path = args.track_path
     width, height = 640, 480
     fov = 80
     fx = (width/2)/(np.tan(np.deg2rad(fov)/2))
     fy = (height/2)/(np.tan(np.deg2rad(fov)/2))
 
     renderer = NerfRenderer(
-        '../outputs/uturn/nerfacto/uturn/config.yml',
+        '../outputs/'+track_path+'/nerfacto/'+track_path+'/config.yml',
         width = width,
         height = height,
         fx = 546.84164912, 
@@ -126,7 +140,8 @@ if __name__ == "__main__":
         # fx = fx,
         # fy = fy,
         cx = 349.18316327,
-        cy = 215.54486004
+        cy = 215.54486004, 
+        track = track_path
     )
 
 
