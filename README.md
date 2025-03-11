@@ -83,6 +83,7 @@ Then open the web GUI using the link printed in the terminal
 
 
 ## Env Explanation
+![](images/gates_image.png)
 
 ### 1. CIRCLE TRACK
 ![Circle Track](images/CIRCLE.png)
