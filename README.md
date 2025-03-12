@@ -62,7 +62,9 @@ Then open the web GUI using the link printed in the terminal
 7.  `ece484-vision-closed-loop.py`
     - Run `ece484-state-controller.py` in closed loop.
     - Output an image folder and a trajectory txt
-8.  `ece484-evaluate.py`
+8.  `ece484_evaluate.py`
+    - Run `ece484_evaluate.py --track-name "Circle_Track"` input trajectory file
+    - mean gate error, mean time, Trajectory Visualization
 
 
 ## Tasks for ECE 484 students

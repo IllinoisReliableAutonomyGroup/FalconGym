@@ -4,11 +4,20 @@ from ece484_state_controller import state_controller
 import argparse
 import json
 import numpy as np
+import csv
+
+
+
+def save_trajectory_to_txt(trajectory, filename="trajectory.txt"):
+    """Save trajectory data to a TXT file"""
+    with open(filename, mode='w') as file: 
+        for row in trajectory:
+            file.write(" ".join(map(str, row)) + "\n")
 
 
 # read gate position input track name : Circle_Track, Uturn_Track, Lemniscate_Track  output : dictinary gate coordinates
 def get_gate_coordinates(track_name):
-    filename = "./scripts/gates_poses.json"
+    filename = "./gates_poses.json"
 
     with open(filename, 'r') as file:
         gate_data = json.load(file)
@@ -43,10 +52,15 @@ if __name__ == "__main__":
     cur_step = 0
     MAX_STEP = 1000
     trajectory = [state]
-    if cur_step <= MAX_STEP:
+    while cur_step <= MAX_STEP:
         control = state_controller(state)
         state = drone_dynamics(state, control)
-        trajectory.append(state) # N * 7 
+        trajectory.append([state[0],state[1],state[2],state[6]]) # N * 7 
+        cur_step = cur_step + 1  # update cur_step
     
     # TODO: log trajectory into a txt
+
+    save_trajectory_to_txt(trajectory, filename=track + "_trajectory.txt")
+    print(f"Trajectory saved to {track}_trajectory.txt")
+
     
