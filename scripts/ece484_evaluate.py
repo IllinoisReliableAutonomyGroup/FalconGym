@@ -37,32 +37,6 @@ def get_gate_coordinates(track_name):
     
 
 
-def plot_trajectory_and_gates(trajectory, gates):
-    
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-
-    ax.plot(trajectory[:, 0], trajectory[:, 1], trajectory[:, 2], 'b-', label="Trajectory")
-
-    for gate_name, (gx, gy, gz, _, _, gyaw) in gates.items():
-
-        ax.scatter(gx, gy, gz, color='r', s=50, label=f"{gate_name}") 
-        
-        theta = np.linspace(0, 2 * np.pi, 100)
-        gate_x = gx + GATE_RADIUS * np.cos(theta)
-        gate_y = gy + GATE_RADIUS * np.sin(theta)
-        gate_z = np.full_like(gate_x, gz)  
-        ax.plot(gate_x, gate_y, gate_z, 'r')
-        arrow_length = 0.5
-        ax.quiver(gx, gy, gz, arrow_length * np.cos(gyaw), arrow_length * np.sin(gyaw), 0, color='k', linewidth=1)
-
-
-    ax.set_xlabel("X (m)")
-    ax.set_ylabel("Y (m)")
-    ax.set_zlabel("Z (m)")
-    ax.set_title("3D Trajectory and Gates Visualization")
-    ax.legend()
-    plt.show()
 
 
 def create_trajectory_line(trajectory):
@@ -101,22 +75,76 @@ def create_gate(x, y, z, theta):
 
     return mesh
 
+def create_arrow(start, end, color=[0, 1, 0]):
+    """Creates an arrow from start to end."""
+    arrow = o3d.geometry.TriangleMesh.create_arrow(
+        cone_radius=0.05, cone_height=0.1, cylinder_radius=0.02, cylinder_height=0.2
+    )
+    arrow.paint_uniform_color(color)
+    
+    direction = end - start
+    direction /= np.linalg.norm(direction)  
+    rotation = R.align_vectors([direction], [[0, 0, 1]])[0].as_matrix()  
+    arrow.rotate(rotation, center=(0, 0, 0))
+    arrow.translate(start)
+    
+    return arrow
+
+def create_text_3d(text, position, font_size=50, color=[1, 1, 1]):
+    """Creates a 3D text object."""
+    text_3d = o3d.geometry.Text3D(text, position=position, font_size=font_size, color=color)
+    return text_3d
+
+def plot_with_matplotlib(trajectory, gates):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    # Plot trajectory
+    ax.plot(trajectory[:, 0], trajectory[:, 1], trajectory[:, 2], color='blue', label="Trajectory")
+
+    # Plot gates
+    for gate_name, (gx, gy, gz, _, _, _) in gates.items():
+        ax.scatter(gx, gy, gz, color='red', s=50, label=f"{gate_name}")
+        ax.text(gx, gy, gz, gate_name, color='black', fontsize=12)
+
+    ax.set_xlabel("X")
+    ax.set_ylabel("Y")
+    ax.set_zlabel("Z")
+    ax.set_title("Trajectory and Gates")
+    plt.legend()
+    plt.show()
+
+def create_text_marker(position, color=[1, 0, 1]):
+    """Creates a small sphere to act as a text marker."""
+    marker = o3d.geometry.TriangleMesh.create_sphere(radius=0.05)
+    marker.paint_uniform_color(color)
+    marker.translate(position)
+    return marker
+
 def plot_trajectory_and_gates(trajectory, gates):
-    """Visualizes the trajectory and gates in Open3D."""
     objects = []
 
+    # Create trajectory line
     trajectory_line = create_trajectory_line(trajectory)
     objects.append(trajectory_line)
 
+    # Start and End Arrows
+    start_arrow = create_arrow(trajectory[0, :3], trajectory[1, :3], color=[0, 1, 0])
+    end_arrow = create_arrow(trajectory[-2, :3], trajectory[-1, :3], color=[0, 0, 1])
+    objects.extend([start_arrow, end_arrow])
 
-    for _, (gx, gy, gz, _, _, gyaw) in gates.items():
+    # Add gates
+    for gate_name, (gx, gy, gz, _, _, gyaw) in gates.items():
         gate_mesh = create_gate(gx, gy, gz, gyaw)
         objects.append(gate_mesh)
 
+        # Add a small sphere above the gate as a placeholder for text
+        marker = create_text_marker((gx, gy, gz + 0.5))
+        objects.append(marker)
+
+        print(f"Gate: {gate_name} at ({gx}, {gy}, {gz})")  # Print names in console
 
     o3d.visualization.draw_geometries(objects, window_name="3D Trajectory and Gates")
-
-
 
 
 def evaluate_trajectory(trajectory, gates, gate_radius=0.38, distance_threshold=0.5):
@@ -136,6 +164,8 @@ def evaluate_trajectory(trajectory, gates, gate_radius=0.38, distance_threshold=
 
 
     gate_vectors = []
+    timelist = []
+    gatecrossed = []
     for i in gate2pass:
         gx, gy, gz, pitch, roll, yaw = gates[i]
         gate_vectors.append((gx, gy, gz))
@@ -162,14 +192,24 @@ def evaluate_trajectory(trajectory, gates, gate_radius=0.38, distance_threshold=
                     print(f"At trajectory point {i}, the drone crossed the plane of gate {gate2pass[j]}.")
                     print(f"Distance from gate center at crossing: {distance_from_gate:.2f} meters")
                     crossing_distances.append(distance_from_gate)
+                    timelist.append(i)
+                    gatecrossed.append(gate2pass[j])
                 elif distance_from_gate < gate_radius +1:
                     print(f"At trajectory point {i}, the drone missed the plane of gate {gate2pass[j]}.")
 
 
             prev_signs[j] = distances_to_planes[j]
-  
+    
+    if gatecrossed[-1] != "Gate D":
+        print("Race incomplete")
+        return None
+    elif gatecrossed[0] != "Gate A":
+        print("Race did not begin from gate A ")
+        return None
+
     avg_distance = np.mean(crossing_distances) if crossing_distances else None
     print(f"\nAverage distance from gate centers: {avg_distance:.2f} meters" if avg_distance else "No crossings detected.")
+    print("Time taken : ",(timelist[-1] -timelist[0])*0.05, " seconds")
     return avg_distance
 
 def parse_args():
@@ -191,6 +231,7 @@ if __name__ == "__main__":
     gates = get_gate_coordinates(track)
     print(gates)
     evaluate_trajectory(trajectory, gates)
+    #plot_with_matplotlib(trajectory, gates)
 
 
     plot_trajectory_and_gates(trajectory, gates)
