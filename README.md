@@ -48,9 +48,13 @@ Then open the web GUI using the link printed in the terminal
     - Note: Modify Track path accordingly
     - Example: `python3 scripts/ns_renderer.py` (note the file hierachy)
 3. `ece484-gate-detection.py`:
+
+    - Write gate detection algorithmn here.
     - Input: RGB (640x480x3)
     - Output: Mask (640x480)
 4. `ece484-state-controller.py`:
+
+    - Write state controller algorithmn here.
     - Input: state (x, y, z, vx, vy, vz, yaw) + gate poses
     - Output: control (ax, ay, az, yaw_rate)
 5. `ece484-vision-controller.py` 
@@ -63,8 +67,10 @@ Then open the web GUI using the link printed in the terminal
     - Run `ece484-state-controller.py` in closed loop.
     - Output an image folder and a trajectory txt
 8.  `ece484_evaluate.py`
-    - Run `ece484_evaluate.py --track-name "Circle_Track"` input trajectory file
-    - mean gate error, mean time, Trajectory Visualization
+    - Run `python3 ece484_evaluate.py --track-name Circle_Track --visflag True --metricsflag True` input trajectory file, 
+    - mean gate error, mean time, success rate and Trajectory Visualization
+    - outputs a metrics json file
+    - refer to sample_results folder
 
 
 ## Tasks for ECE 484 students
