@@ -197,8 +197,11 @@ def evaluate_trajectory(trajectory, gates, gate_radius=0.38, distance_threshold=
 
 def parse_args():
     parser = argparse.ArgumentParser(description="NeRF Renderer for Camera Poses")
+
     parser.add_argument("--track-name", type=str, required=True,
                         help="Specify track name [Circle_Track, Uturn_Track, Lemniscate_Track ] ")
+    parser.add_argument("--trajectory-path", type=str, required=True,
+                        help="txt file location of trajectory points saved")
     parser.add_argument("--visflag", type=bool, default=True, nargs='?', const=False,
                         help="Flag for visualization (default: False)")
     parser.add_argument("--metricsflag", type=bool, default=True, nargs='?', const=False,
@@ -212,10 +215,10 @@ def parse_args():
 if __name__ == "__main__":
     args = parse_args()
     track = args.track_name
+    filename = args.trajectory_path
     vflag = args.visflag
     mflag = args.metricsflag
 
-    filename = "circle_traj.txt"  # change this to ur text file to evaluate
     trajectory = read_trajectory(filename)
     gates = get_gate_coordinates(track)
     print(gates)

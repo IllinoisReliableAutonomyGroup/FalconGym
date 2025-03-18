@@ -67,7 +67,7 @@ Then open the web GUI using the link printed in the terminal
     - Run `ece484-state-controller.py` in closed loop.
     - Output an image folder and a trajectory txt
 8.  `ece484_evaluate.py`
-    - Run `python3 ece484_evaluate.py --track-name Circle_Track --visflag True --metricsflag True` input trajectory file, 
+    - Run `python3 ece484_evaluate.py --track-name Circle_Track --trajectory-path circle_traj.txt --visflag True --metricsflag True` take track name and trajectory txt file as arguments flags are optional. (make your trajectory.txt file by running 6 or 7)
     - mean gate error, mean time, success rate and Trajectory Visualization
     - outputs a metrics json file
     - refer to sample_results folder
