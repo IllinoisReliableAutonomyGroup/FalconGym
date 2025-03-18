@@ -2,3 +2,5 @@ outputs/*
 circle/*
 lemniscate/*
 uturn/*
+scripts/circle_traj.txt
+
