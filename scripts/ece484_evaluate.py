@@ -1,3 +1,29 @@
+"""
+File: ece484_evaluate.py
+
+Drone Simulation Metrics Calculator
+
+Description: This script calculates key metrics for a drone simulation based on a provided trajectory file.
+It evaluates the drone's performance across three different environments (Circle Track, Uturn Track, Lemniscate Track).
+The metrics include average distance from gate centers, lap time, and success rate.
+
+Usage:
+    - Specify the track name (e.g., Circle_Track, Uturn_Track, Lemniscate_Track).
+    - Provide the path to the trajectory file.
+    - Optionally, enable visualization and metrics calculation.
+
+Metrics:
+    - Average distance from gate centers (MGE)
+    - Lap time (LT)
+    - Success rate (SR)
+
+Environments:
+    - Circle Track
+    - Uturn Track
+    - Lemniscate Track
+"""
+
+
 import numpy as np
 import csv
 import argparse

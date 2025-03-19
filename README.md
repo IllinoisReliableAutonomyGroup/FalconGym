@@ -101,29 +101,41 @@ Then open the web GUI using the link printed in the terminal
     - outputs a metrics json file and plot of the trajectory.
     - refer to sample_results folder
 
+9. `ece484_videogenerator.py`: Generates a video from sequentially named images.
+    - Input: Folder containing PNG images.
+    - Output: MP4 video file.
+    - Arguments:
+        - `--input`: Path to the image folder.
+        - `--output`: Path to save the video file.
+        - `--fps`: Frames per second (default: 30).
+    - Example: `python3 ece484_videogenerator.py --input ./closed_loop/images --output ./track_vision_trajectory.mp4 --fps 30
+
 
 ## Tasks for ECE 484 students
-1. State-based Controller
-    - Implement `ece484_state_controller.py` to finish 2 laps (8 gates) in each of the three tracks
-    - Gate poses are in `gates_pos.txt`
-    - Run `ece484_state_closed_loop.py` to generate trajectory txt file
-    - Report Success Rate SR (% of gates you can cross), Mean-Gate-Error MGE (average distance to gate center when you cross a gate), Lap Time LP (=0.05 * # frames) using ece484_evaluate.py script.
-    - Yan's benchmark for circle track: 100% SR, 2.49cm MGE, 11s LP
-2. Gate Detection
+1. **State-Based Controller**
+    - Implement `ece484_state_controller.py` to navigate 2 laps (8 gates) in each of the three tracks.
+    - Use `gates_pos.txt` for gate locations.
+    - Run `ece484_state_closed_loop.py` to generate a trajectory file.
+    - Evaluate using `ece484_evaluate.py`, reporting:
+      - **SR** (Success Rate): % of gates successfully crossed.
+      - **MGE** (Mean Gate Error): Avg. distance from gate center.
+      - **LP** (Lap Time): `0.05 * # frames`.
+    - Benchmark (Circle Track): SR = 100%, MGE = 2.49cm, LP = 11s.
+2. **Gate Detection**
     - Implement `ece484-gate-detection.py`
     - Collect image dataset using ns-renderer.py
     - You should demonstrate at least have around 100 images of different gates in different tracks (obtained from sampling using `ns-renderer.py`) where you can do gate detection perfectly through visual inspection. 
     - Yan's benchmark, Check `gate-detect-Yan-example/`
-3. Localization / SLAM
+3. **Localization / SLAM**
     - You can free-style create or modify anything, the goal is to build on Task 2 to achieve:
         - Input: RGB Image
         - Output: gate relative pose to camera
     - Reference: [GateNet](https://github.com/open-airlab/GateNet)
-4. Vision-Based Control
-    - Implement `ece484_vision_controller.py`, using your intermediate results/knowledge from Task 2 and Task 3
-    - Run `ece484_vision_closed_loop.py` to generate trajectory txt file and video
-    - Report Success Rate SR (% of gates you can cross), Mean-Gate-Error MGE (average distance to gate center when you cross a gate), Lap Time LP (=0.05 * # frames) using ece484_evaluate.py script.
-  
+4. **Vision-Based Control**
+    - Implement `ece484_vision_controller.py` using insights from Tasks 2 & 3.
+    - Run `ece484_vision_closed_loop.py` to generate a trajectory file and images.
+    - Use `ece484_videogenerator.py` to generate a video from the output images.
+    - Evaluate using `ece484_evaluate.py`, reporting SR, MGE, and LP.
 
 
 ## Env Explanation
@@ -136,5 +148,6 @@ Then open the web GUI using the link printed in the terminal
 Please include the below information in your final submission.
 1. 6 Trajectory.txt files 3 using State-based Controller for all 3 environments and 3 using Vision-based controller for all 3 environments
 2. 6 metrics.json files 3 using State-based Controller for all 3 environments and 3 using Vision-based controller for all 3 environments
+3. 3 MP4 video files generated using Vision-based controller for each environment [Sample video](https://uillinoisedu-my.sharepoint.com/:v:/g/personal/mkg7_illinois_edu/Ef8JGuti9Q9MkdXbGLL4g2QBY8AK-GwkcmIff8aKlB7lWA?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=kVB2Lo).
 
 

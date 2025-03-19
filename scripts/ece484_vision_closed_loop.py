@@ -115,32 +115,3 @@ if __name__ == "__main__":
     print(f"Trajectory saved to {track}_trajectory.txt")
 
 
-    fps = 30
-
-    image_path = "./closed_loop/images"
-
-    # Define the video output path
-    video_path = "./"+track + "_vision_trajectory.mp4"
-
-    image_files = [f for f in os.listdir(image_path) if f.endswith('.png')]
-
-    # Sort the images by filename (assuming they are named sequentially)
-    image_files.sort(key=lambda x: int(x.split('.')[0]))
-
-    # Get the dimensions of the first image
-    img = cv2.imread(os.path.join(image_path, image_files[0]))
-    height, width, _ = img.shape
-
-    # Define the video writer
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    video_writer = cv2.VideoWriter(video_path, fourcc, fps, (width, height))
-
-    # Write each image to the video
-    for file in image_files:
-        img = cv2.imread(os.path.join(image_path, file))
-        video_writer.write(img)
-
-    # Release the video writer
-    video_writer.release()
-
-    print("Video created successfully.")
