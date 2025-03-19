@@ -106,9 +106,6 @@ if __name__ == "__main__":
         trajectory.append(x,y,z,yaw)
         
 
-        # plt.imshow(img)
-        # plt.show()
-        # break
         cv2.imwrite(f"./closed_loop/images/{idx:04d}.png", cv_img)
 
     save_trajectory_to_txt(trajectory, filename=track + "_vision_trajectory.txt")
