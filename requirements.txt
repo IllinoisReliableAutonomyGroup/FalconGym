@@ -1,6 +1,5 @@
 opencv-python
 scipy
 plotly
-pickle
 numpy
-argparse
+
