@@ -1,4 +1,7 @@
 opencv-python
 scipy
 plotly
-
+json
+pickle
+numpy
+argparse
