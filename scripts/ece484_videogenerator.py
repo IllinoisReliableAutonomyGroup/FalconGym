@@ -12,7 +12,7 @@ Usage:
 Arguments:
     --input   : Path to the directory containing PNG images.
     --output  : Path where the output video file will be saved.
-    --fps     : Frames per second (default: 30).
+    --fps     : Frames per second (default: 20).
 
 
 """
@@ -21,7 +21,7 @@ import os
 import cv2
 import argparse
 
-def create_video_from_images(input_path, output_path, fps=30):
+def create_video_from_images(input_path, output_path, fps=20):
     """
     Creates a video from a sequence of images in the specified directory.
     
@@ -66,7 +66,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate a video from images in a directory.")
     parser.add_argument("--input", required=True, help="Path to the input directory containing images.")
     parser.add_argument("--output", required=True, help="Path to save the output video file.")
-    parser.add_argument("--fps", type=int, default=30, help="Frames per second (default: 30)")
+    parser.add_argument("--fps", type=int, default=20, help="Frames per second (default: 20)")
     
     args = parser.parse_args()
     create_video_from_images(args.input, args.output, args.fps)
