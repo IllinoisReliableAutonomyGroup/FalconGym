@@ -148,6 +148,6 @@ Then open the web GUI using the link printed in the terminal
 Please include the below information in your final submission.
 1. 6 Trajectory.txt files 3 using State-based Controller for all 3 environments and 3 using Vision-based controller for all 3 environments
 2. 6 metrics.json files 3 using State-based Controller for all 3 environments and 3 using Vision-based controller for all 3 environments
-3. 3 MP4 video files generated using Vision-based controller for each environment [Sample video](https://uillinoisedu-my.sharepoint.com/:v:/g/personal/mkg7_illinois_edu/Ef8JGuti9Q9MkdXbGLL4g2QBY8AK-GwkcmIff8aKlB7lWA?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=kVB2Lo).
+3. 3 MP4 video files generated using Vision-based controller for each environment [Summary video](https://uillinoisedu-my.sharepoint.com/:v:/g/personal/mkg7_illinois_edu/Ef8JGuti9Q9MkdXbGLL4g2QBY8AK-GwkcmIff8aKlB7lWA?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=kVB2Lo).
 
 
