@@ -24,9 +24,10 @@ To cite it, you can use
     - python >= 3.8
     - PyTorch 2.1.2
     - CUDA 11.8
-    - OpenCV
-    - SciPy
-    - Plotly
+    - numpy 1.24.4
+    - OpenCV 4.11.0
+    - SciPy 1.10.1
+    - Plotly 6.0
 
 ## Installation
 
