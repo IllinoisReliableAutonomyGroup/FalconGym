@@ -113,6 +113,9 @@ Then open the web GUI using the link printed in the terminal
     - Reference: [GateNet](https://github.com/open-airlab/GateNet)
 4. Vision-Based Control
     - Implement `ece484_vision_controller.py`, using your intermediate results/knowledge from Task 2 and Task 3
+    - Run `ece484_vision_closed_loop.py` to generate trajectory txt file and video
+    - Report Success Rate SR (% of gates you can cross), Mean-Gate-Error MGE (average distance to gate center when you cross a gate), Lap Time LP (=0.05 * # frames) using ece484_evaluate.py script.
+  
 
 
 ## Env Explanation
