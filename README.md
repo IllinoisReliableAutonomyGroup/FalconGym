@@ -20,6 +20,13 @@ To cite it, you can use
       url={https://arxiv.org/abs/2503.02198}, 
 }
 ```
+## Dependencies
+    - python >= 3.8
+    - PyTorch 2.1.2
+    - CUDA 11.8
+    - OpenCV
+    - SciPy
+    - Plotly
 
 ## Installation
 1. Follow tutorial on [NeRFStudio](https://docs.nerf.studio/quickstart/installation.html) to install both Conda and NeRFStudio
@@ -113,5 +120,9 @@ Then open the web GUI using the link printed in the terminal
 
 ![Circle Track](images/tracks.png)
 
+
+## Submission Files
+    - 6 Trajectory.txt files 3 using State-based Controller for all 3 environments and 3 using Vision-based controller for all 3 environments
+    - 6 metrics.json files 3 using State-based Controller for all 3 environments and 3 using Vision-based controller for all 3 environments
 
 
