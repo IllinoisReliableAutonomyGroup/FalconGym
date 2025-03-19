@@ -110,7 +110,7 @@ Then open the web GUI using the link printed in the terminal
         - `--input`: Path to the image folder.
         - `--output`: Path to save the video file.
         - `--fps`: Frames per second (default: 20).
-    - Example: `python3 ece484_videogenerator.py --input ./closed_loop/images --output ./track_vision_trajectory.mp4 --fps 30
+    - Example: `python3 ece484_videogenerator.py --input ./closed_loop/images --output ./track_vision_trajectory.mp4 --fps 20
 
 
 ## Tasks for ECE 484 students
