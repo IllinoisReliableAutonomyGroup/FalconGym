@@ -10,7 +10,7 @@ import plotly.graph_objects as go
 GATE_RADIUS = 0.38 #gate Radius
 
 def generate_gate_circle(gx, gy, gz, yaw, num_points=100):
-    """Generates a circular gate in the XZ plane and rotates it by yaw, matching Open3D transformation."""
+    """Generates a circular gate in the XZ plane and rotates it by yaw"""
     theta = np.linspace(0, 2 * np.pi, num_points)  # 100 points around the circle
     z = GATE_RADIUS * np.cos(theta)  
     x = GATE_RADIUS * np.sin(theta)  
@@ -27,9 +27,11 @@ def generate_gate_circle(gx, gy, gz, yaw, num_points=100):
     return x_final, y_final, z_final
 
 def plot_with_plotly(trajectory, gates):
+
+    """Takes the Numpy format of trajectory points and dictinary format of gate corrdinates and plots it"""
     fig = go.Figure()
 
-    # Plot trajectory
+    # Plots trajectory points
     fig.add_trace(go.Scatter3d(
         x=trajectory[:, 0], 
         y=trajectory[:, 1], 
@@ -39,10 +41,12 @@ def plot_with_plotly(trajectory, gates):
         name='Trajectory'
     ))
 
+
+    #Plots Gate corrdinates
     for gate_name, (gx, gy, gz, _, _, gyaw) in gates.items():
         gate_x, gate_y, gate_z = generate_gate_circle(gx, gy, gz, gyaw)
 
-        # Plot gate circl
+        # Plot gate circle
         fig.add_trace(go.Scatter3d(
             x=gate_x, 
             y=gate_y, 
@@ -63,6 +67,7 @@ def plot_with_plotly(trajectory, gates):
         ))
 
 
+    #Starting point of the trajectory
     fig.add_trace(go.Scatter3d(
         x=[trajectory[0, 0]], 
         y=[trajectory[0, 1]], 
@@ -74,6 +79,7 @@ def plot_with_plotly(trajectory, gates):
         name='Start Point'
     ))
 
+    #Ending point of the trajectory
     fig.add_trace(go.Scatter3d(
         x=[trajectory[-1, 0]], 
         y=[trajectory[-1, 1]], 
@@ -101,7 +107,7 @@ def plot_with_plotly(trajectory, gates):
 
 
 def read_trajectory(filename):
-    
+    """Reads trajectory points X,Y,Z,YAW from TXT file and converts the data to numpy array"""
     data = []
     with open(filename, 'r') as file:
         for line in file:
@@ -112,6 +118,7 @@ def read_trajectory(filename):
 
 
 def get_gate_coordinates(track_name):
+    """Reads the gates coordinates from json file using track name and returns the dictionary"""
     filename = "./gates_poses.json"
 
     with open(filename, 'r') as file:
@@ -126,64 +133,90 @@ def get_gate_coordinates(track_name):
 
 
 
-def evaluate_trajectory(trajectory, gates, gate_radius=0.38, distance_threshold=0.5):
+def evaluate_trajectory(trajectory, gates, gate_radius=0.38):
 
+    """
+    Parameters:
+    - trajectory: List of points representing the drone's path.
+    - gates: Dictionary of gate positions and orientations.
+    - gate_radius: Radius of the gates (default=0.38 meters) DO NOT CHANGE.
+    
+    Returns:
+    - avg_distance: Average distance from gate centers.
+    - lt: Lap time in seconds.
+    - sr: Success rate.
 
-    gate_normal_list = []
-    gate2pass = ["Gate A","Gate B","Gate C","Gate D"]
+    MGE[MEAN GATE ERROR] = average distance error of the drone from gate centers
+    LT[LAP TIME] = Time taken by the drone to complete one lap
+    SR[SUCCESS RATE] = Ratio of gates passed without collision over total gates in 2 laps.
+    
+    NOTE : The function assumes that the drone starts from "Gate A" and ends at "Gate D" and completes 2 laps.
+    """
+    gate_normal_list = [] # Initialize list to store gate normals
+    gate2pass = ["Gate A","Gate B","Gate C","Gate D"] # Define the order of gates to pass
+
+    # Calculate gate normals based on their orientations
     for gate_name, (gx, gy, gz, pitch, roll, yaw) in gates.items():
+
+        # Handle yaw=0 to avoid division by zero in rotation calculations
         if yaw ==0:
             yaw =3.14
         rotation = R.from_euler('xyz', [pitch, roll, yaw])
         gate_normal = rotation.apply([yaw, 0, 0])  
-        gate_normal_list.append(gate_normal)
-
-    crossing_distances = []
-    prev_signs = [None, None, None, None]  
+        gate_normal_list.append(gate_normal) # Gate normals
 
 
+    # Initialize lists to track crossing distances, previous signs, and gate vectors
+    crossing_distances = [] 
+    prev_signs = [None, None, None, None] # A list of flag signs for each gate to check if the drone has crossed the gate plane.
     gate_vectors = []
+
     timelist = []
     gatecrossed = []
+
+    # Extract gate positions
     for i in gate2pass:
         gx, gy, gz, pitch, roll, yaw = gates[i]
         gate_vectors.append((gx, gy, gz))
+
+    # Initialize success rate counter
     sr = 0
-    for i, point in enumerate(trajectory):
+    for i, point in enumerate(trajectory):# Iterate through each point in the trajectory
+        
         px, py, pz = point[:3] 
         vectors_to_gates = [
             np.array([px - gx, py - gy, pz - gz]) for gx, gy, gz in gate_vectors
-        ]
+        ]# Calculate vectors from the drone to each gate
 
 
         distances_to_planes = [
             np.dot(vectors_to_gates[j], gate_normal_list[j]) for j in range(len(gate2pass))
-        ]
+        ] # calculating the distance of the drone from each gate
 
 
         for j in range(len(gate2pass)):
 
-            if prev_signs[j] is not None and np.sign(prev_signs[j]) != np.sign(distances_to_planes[j]):
+            if prev_signs[j] is not None and np.sign(prev_signs[j]) != np.sign(distances_to_planes[j]): # Check if there's a sign change, indicating a crossing
                 gx, gy, gz = gate_vectors[j] 
                 distance_from_gate = np.linalg.norm([px - gx, py - gy, pz - gz])
 
-                if distance_from_gate < gate_radius :
+                if distance_from_gate < gate_radius :# Check if the crossing was successful (within gate radius)
                     print(f"At trajectory point {i}, the drone crossed the plane of gate {gate2pass[j]}.")
                     print(f"Distance from gate center at crossing: {distance_from_gate:.2f} meters")
                     crossing_distances.append(distance_from_gate)
                     timelist.append(i)
                     gatecrossed.append(gate2pass[j])
                     sr = sr +1
-                elif distance_from_gate < gate_radius +1:
+                elif distance_from_gate < gate_radius +1: #Checking for collision and gate miss.
                     print(f"At trajectory point {i}, the drone missed the plane of gate {gate2pass[j]}.")
 
 
             prev_signs[j] = distances_to_planes[j]
     
-    if gatecrossed[-1] != "Gate D":
+    if gatecrossed[-1] != "Gate D": # Check if the race was completed
         print("Race incomplete")
         return None
-    elif gatecrossed[0] != "Gate A":
+    elif gatecrossed[0] != "Gate A": # Check if the race began properly
         print("WARNING! Race did not begin from gate A ")
         #return None
 
@@ -213,6 +246,7 @@ def parse_args():
 
 
 if __name__ == "__main__":
+
     args = parse_args()
     track = args.track_name
     filename = args.trajectory_path
@@ -222,6 +256,8 @@ if __name__ == "__main__":
     trajectory = read_trajectory(filename)
     gates = get_gate_coordinates(track)
     print(gates)
+
+    
     avg_distance, lt, sr = evaluate_trajectory(trajectory, gates)
 
     if vflag:

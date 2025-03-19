@@ -1,12 +1,18 @@
+"""
+File: ece484_vision_closed_loop.py
 
+Description: This script simulates a drone's trajectory on a specified track using closed-loop control through vision.
+
+Tracks supported: Circle_Track, Uturn_Track, Lemniscate_Track
+
+The simulation involves rendering images from NerfRenderer class[ns-renderer.py], 
+saves the trajectory to a text file, and creating a video from the rendered images.
+"""
 import numpy as np
 from drone_dynamics import drone_dynamics
 from ece484_vision_controller import vision_controller
-
 import torch 
 from nerfstudio.models.splatfacto import SplatfactoModel
-# from nerfstudio.utils import load_config, load_model
-# from nerfstudio
 from scipy.spatial.transform import Rotation as R 
 import cv2 
 from nerfstudio.cameras.cameras import Cameras, CameraType
@@ -16,111 +22,31 @@ import numpy as np
 import os 
 from pathlib import Path
 import matplotlib.pyplot as plt 
-# from ns_dp_info import dpDict
 import json
 from scipy.spatial.transform import Rotation
-
 import time
 import pickle
 import random
+from ns-renderer import NerfRenderer
 
-class NerfRenderer:
-    def __init__(
-        self,
-        config_path: str, 
-        width: int,
-        height: int, 
-        fx: float, 
-        fy: float, 
-        distortion_params: np.ndarray = None,
-        camera_type = CameraType.PERSPECTIVE,
-        metadata = None, 
-        cx = None,
-        cy = None
-    ):
-        self._script_dir = os.path.dirname(os.path.realpath(__file__))
-        self.config_path = Path(os.path.join(self._script_dir, config_path))
 
-        self.fx = fx
-        self.fy = fy
+def save_trajectory_to_txt(trajectory, filename="trajectory.txt"):
+    """Save trajectory data to a TXT file"""
+    with open(filename, mode='w') as file: 
+        for row in trajectory:
+            file.write(" ".join(map(str, row)) + "\n")
 
-        if cx:
-            self.cx = cx
-        else:
-            self.cx = width/2
-        if cy:
-            self.cy = cy
-        else:
-            self.cy = height/2
-        # self.cx, self.cy = width/2, height/2
+def parse_args():
+    parser = argparse.ArgumentParser(description="Closed loop Vision controller ")
+    parser.add_argument("--track_name", type=str, default="circle",
+                        help="give track name")
 
-        self.nerfW = width
-        self.nerfH = height
-        self.distortion_params = distortion_params
-        self.camera_type  = camera_type
+    return parser.parse_args()
 
-        self.focal = self.fx
-
-        self.metadata = metadata
-
-        _, pipeline, _, step = eval_setup(
-            self.config_path,
-            eval_num_rays_per_chunk=None,
-            test_mode='inference'
-        )
-        self.model = pipeline.model 
-
-        # 
-        with open("./outputs/circle/nerf/circle/dataparser_transforms.json", 'r') as f:
-            self.dp_trans_info = json.load(f)
-
-    def render(self, cam_state:np.ndarray):
-        # rpy = R.from_matrix(cam_state[0, :3,:3])
-        
-        # Convert camera pose to what's stated in transforms_orig.json
-        tmp = Rotation.from_euler('zyx',[-np.pi/2,np.pi/2,0]).as_matrix()
-        mat = cam_state[:3,:3]@tmp 
-        cam_state[:3,:3] = mat 
-
-        # # Convert camera pose to Colmap frame in transforms.json
-        cam_state[0:3,1:3] *= -1
-        cam_state = cam_state[np.array([0,2,1,3]),:]
-        cam_state[2,:] *= -1 
-        
-        
-        transform = np.array(self.dp_trans_info['transform'])
-        scale_factor = self.dp_trans_info['scale']
-        # print(transform.shape, cam_state.shape)
-        cam_state = transform@cam_state
-        cam_state[:3,3] *= scale_factor
-        cam_state = cam_state[:3,:]
-
-        if cam_state.ndim == 2:
-            cam_state = np.expand_dims(cam_state, axis=0)
-        camera_to_world = torch.FloatTensor( cam_state )
-
-        camera = Cameras(camera_to_worlds = camera_to_world, fx = self.fx, fy = self.fy, cx = self.cx, cy = self.cy, width=self.nerfW, height=self.nerfH, distortion_params=self.distortion_params, camera_type=self.camera_type, metadata=self.metadata)
-        camera = camera.to('cuda')
-        
-        ray_bundle = camera.generate_rays(camera_indices=0, aabb_box=None)
-        
-        with torch.no_grad():
-            tmp = self.model.get_outputs_for_camera_ray_bundle(ray_bundle)
-        s = time.time()
-        
-
-        img = tmp['rgb']
-        # print(tmp)
-        img =(colormaps.apply_colormap(image=img, colormap_options=colormaps.ColormapOptions(colormap='gray', normalize=True, colormap_min=0, colormap_max=255) )).cpu().numpy()
-        # img = img.cpu().numpy()
-        print(f"NN Inference setup time: {round(time.time() - s, 4)}s")
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        img = (img * 255).astype(np.uint8)
-        img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-
-        return img
 
 if __name__ == "__main__":
+    args = parse_args()
+    track_path = args.track_path
     scale_factor = 1
     width, height = 640, 480
     fov = 80
@@ -129,15 +55,14 @@ if __name__ == "__main__":
 
     renderer = NerfRenderer(
 
-        '../outputs/circle/nerf/circle/config.yml',
+        '../outputs/'+track_path+'/nerfacto/'+track_path+'/config.yml',
         width = width//scale_factor,
         height = height//scale_factor,
         fx = 546.84164912/scale_factor, 
         fy = 547.57957461/scale_factor,
-        # fx = fx,
-        # fy = fy,
         cx = 349.18316327/scale_factor,
-        cy = 215.54486004/scale_factor
+        cy = 215.54486004/scale_factor,
+        track = track_path
     )
 
     def find_angle_difference(angle1, angle2):
@@ -155,7 +80,6 @@ if __name__ == "__main__":
     control_val = [0, 0, 0, 0] # ax, ay, az, yaw_rate
 
     trajectory = []
-    image_list = []
 
     dynamics_state = [x, y, z, vx, vy, vz, yaw] # x, y, z, vx, vy, vz, cur_yaw
 
@@ -179,10 +103,44 @@ if __name__ == "__main__":
         next_state = drone_dynamics(dynamics_state, control) 
         x, y, z, vx, vy, vz, yaw = next_state
 
-        with open('./closed_loop/circle_traj.txt', 'a') as f:
-            f.write(f"{x} {y} {z} {yaw}\n")
+        trajectory.append(x,y,z,yaw)
+        
 
         # plt.imshow(img)
         # plt.show()
         # break
         cv2.imwrite(f"./closed_loop/images/{idx:04d}.png", cv_img)
+
+    save_trajectory_to_txt(trajectory, filename=track + "_vision_trajectory.txt")
+    print(f"Trajectory saved to {track}_trajectory.txt")
+
+
+    fps = 30
+
+    image_path = "./closed_loop/images"
+
+    # Define the video output path
+    video_path = "./"+track + "_vision_trajectory.mp4"
+
+    image_files = [f for f in os.listdir(image_path) if f.endswith('.png')]
+
+    # Sort the images by filename (assuming they are named sequentially)
+    image_files.sort(key=lambda x: int(x.split('.')[0]))
+
+    # Get the dimensions of the first image
+    img = cv2.imread(os.path.join(image_path, image_files[0]))
+    height, width, _ = img.shape
+
+    # Define the video writer
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    video_writer = cv2.VideoWriter(video_path, fourcc, fps, (width, height))
+
+    # Write each image to the video
+    for file in image_files:
+        img = cv2.imread(os.path.join(image_path, file))
+        video_writer.write(img)
+
+    # Release the video writer
+    video_writer.release()
+
+    print("Video created successfully.")

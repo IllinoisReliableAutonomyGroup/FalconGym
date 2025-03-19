@@ -1,3 +1,12 @@
+"""
+File: ece484_state_closed_loop.py
+
+Description: This script simulates a drone's trajectory on a specified track using closed-loop control.
+It reads gate coordinates from a JSON file, simulates the drone's dynamics, and saves the trajectory to a text file.
+
+Tracks supported: Circle_Track, Uturn_Track, Lemniscate_Track
+"""
+
 import numpy as np
 from drone_dynamics import drone_dynamics
 from ece484_state_controller import state_controller
@@ -17,6 +26,7 @@ def save_trajectory_to_txt(trajectory, filename="trajectory.txt"):
 
 # read gate position input track name : Circle_Track, Uturn_Track, Lemniscate_Track  output : dictinary gate coordinates
 def get_gate_coordinates(track_name):
+    """takes gate coorinates from json file"""
     filename = "./gates_poses.json"
 
     with open(filename, 'r') as file:
@@ -58,8 +68,8 @@ if __name__ == "__main__":
         trajectory.append([state[0],state[1],state[2],state[6]]) # N * 7 
         cur_step = cur_step + 1  # update cur_step
     
-    # TODO: log trajectory into a txt
 
+    #Save trajectory in txt file
     save_trajectory_to_txt(trajectory, filename=track + "_trajectory.txt")
     print(f"Trajectory saved to {track}_trajectory.txt")
 

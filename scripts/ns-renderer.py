@@ -1,7 +1,20 @@
+"""
+File: ns-renderer.py
+
+NeRF Renderer for Camera Poses
+
+Description: This script provides a class-based implementation for rendering NeRF scenes based on given camera poses.
+It utilizes the Nerfstudio framework to handle camera transformations and image rendering.
+
+### Key Features:
+- **Camera Pose Transformation**: Converts camera poses into the required format for rendering.
+- **NeRF Rendering**: Uses a Splatfacto model to generate images from camera poses.
+
+USE this script to generate training data for vision control.
+"""
+
 import torch 
 from nerfstudio.models.splatfacto import SplatfactoModel
-# from nerfstudio.utils import load_config, load_model
-# from nerfstudio
 from scipy.spatial.transform import Rotation as R 
 import cv2 
 from nerfstudio.cameras.cameras import Cameras, CameraType
@@ -11,13 +24,13 @@ import numpy as np
 import os 
 from pathlib import Path
 import matplotlib.pyplot as plt 
-# from ns_dp_info import dpDict
 import json
 from scipy.spatial.transform import Rotation
 import argparse
 import time
 import pickle
-
+import numpy as np
+from scipy.spatial.transform import Rotation as R
 
 def parse_args():
     parser = argparse.ArgumentParser(description="NeRF Renderer for Camera Poses")
@@ -28,6 +41,23 @@ def parse_args():
 
 
 class NerfRenderer:
+    """
+    A class for rendering NeRF scenes based on camera poses.
+
+    Attributes:
+        config_path (str): Path to the configuration file.
+        width (int): Image width.
+        height (int): Image height.
+        fx (float): Focal length in the x-axis.
+        fy (float): Focal length in the y-axis.
+        distortion_params (np.ndarray): Camera distortion parameters.
+        camera_type (CameraType): Type of camera.
+        metadata (any): Additional metadata.
+        cx (float): Principal point x-coordinate.
+        cy (float): Principal point y-coordinate.
+        track (str): Track path.
+    """
+
     def __init__(
         self,
         config_path: str, 
@@ -42,12 +72,28 @@ class NerfRenderer:
         cy = None,
         track = track_path
     ):
+
+        """
+        Initialize the NerfRenderer.
+
+        Parameters:
+            config_path (str): Path to the configuration file.
+            width (int): Image width.
+            height (int): Image height.
+            fx (float): Focal length in the x-axis.
+            fy (float): Focal length in the y-axis.
+            distortion_params (np.ndarray): Camera distortion parameters. Defaults to None.
+            camera_type (CameraType): Type of camera. Defaults to CameraType.PERSPECTIVE.
+            metadata (any): Additional metadata. Defaults to None.
+            cx (float): Principal point x-coordinate. Defaults to None.
+            cy (float): Principal point y-coordinate. Defaults to None.
+            track (str): Track path. Defaults to None.
+        """
+
         self._script_dir = os.path.dirname(os.path.realpath(__file__))
         self.config_path = Path(os.path.join(self._script_dir, config_path))
-
         self.fx = fx
         self.fy = fy
-
         if cx:
             self.cx = cx
         else:
@@ -56,8 +102,6 @@ class NerfRenderer:
             self.cy = cy
         else:
             self.cy = height/2
-        # self.cx, self.cy = width/2, height/2
-
         self.nerfW = width
         self.nerfH = height
         self.distortion_params = distortion_params
@@ -79,8 +123,16 @@ class NerfRenderer:
             self.dp_trans_info = json.load(f)
 
     def render(self, cam_state:np.ndarray):
-        # rpy = R.from_matrix(cam_state[0, :3,:3])
-        
+        """
+        Render an image based on the given camera pose.
+
+        Parameters:
+            cam_state (np.ndarray): 4x4 camera pose matrix.
+
+        Returns:
+            np.ndarray: Rendered image.
+        """
+
         # Convert camera pose to what's stated in transforms_orig.json
         tmp = Rotation.from_euler('zyx',[-np.pi/2,np.pi/2,0]).as_matrix()
         mat = cam_state[:3,:3]@tmp 
@@ -113,8 +165,9 @@ class NerfRenderer:
             tmp = self.model.get_outputs_for_camera_ray_bundle(ray_bundle)
         print(f"NN Inference setup time: {round(time.time() - s, 2)}s")
 
+        # Extract RGB image
         img = tmp['rgb']
-        img =(colormaps.apply_colormap(image=img, colormap_options=colormaps.ColormapOptions())).cpu().numpy()
+        img =(colormaps.apply_colormap(image=img, colormap_options=colormaps.ColormapOptions())).cpu().numpy() # Apply colormap
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = (img * 255).astype(np.uint8)
         img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
@@ -137,20 +190,19 @@ if __name__ == "__main__":
         height = height,
         fx = 546.84164912, 
         fy = 547.57957461,
-        # fx = fx,
-        # fy = fy,
         cx = 349.18316327,
         cy = 215.54486004, 
         track = track_path
     )
 
 
-    import numpy as np
-    from scipy.spatial.transform import Rotation as R
+    
 
     # TODO: replace w/ continuous trajectory / RRT Planner
+    ## provide an arbitary [x, y, z, roll, pitch, yaw] to get fpv from that location
+    ## You can also use the states of drone from ece484_state_controller.py to generate images along the path but adjust the yaw value along the path, Use it to create training data
     pose_list = [
-        # [1.5, -0.15, 0.4, 0, 0, 3.14], # x, y, z, roll, pitch, yaw, gate_flag
+        # [1.5, -0.15, 0.4, 0, 0, 3.14], # x, y, z, roll, pitch, yaw
         # [1.5, -0.15, 0.4, 0, 0, -1.57 + 1.57],
         # [-0.25, -1.7, 0.4, 0, 0,-3.14 + 1.57],
         # [-1.8, 0.05, 0.4, 0, 0, 1.57 + 1.57],
@@ -158,26 +210,16 @@ if __name__ == "__main__":
 
         [-2.1, 1.1, 0.85, 0, 0, -0.7]
 
-        # [1, 2, 1, 0, 0, -2],
-        # [0, 2, 0.8, 0, 0, -1.57],
-        # [-1, 2, 0.8, 0, 0, -1],
 
-        # # [0, 2.5, 0.85, 0, 0, -1.57]
-        # [0, 0, 0.85, 0, 0, -2.5]
 
     ]
     for idx, (x, y, z, roll, pitch, yaw) in enumerate(pose_list):
 
-        # pitch = np.radians(0)  # example pitch in radians
-        # yaw = -.5    # example yaw in radians
-        # roll = np.radians(0)   # example roll in radians
-        # x, y, z = -1, 1, 0.5    # example translation coordinates
+
 
         # Step 1: Create the rotation matrix from pitch, yaw, roll
         rotation = R.from_euler('xyz', [roll, pitch, yaw], degrees=False)  # 'xyz' assumes roll, pitch, yaw order
-        # x = 0.1
-        # y*=2
-        # rotation = R.from_euler('xyz', [0,0,-1.57], degrees=False)  # 'xyz' assumes roll, pitch, yaw order
+
         rotation_matrix = rotation.as_matrix()  # Converts to a 3x3 rotation matrix
 
         # Step 2: Create the 4x4 transformation matrix
@@ -188,9 +230,10 @@ if __name__ == "__main__":
         s = time.time()
         img = renderer.render(camera_pose) # RGB
         cv_img = img[:, :, ::-1]
-        print(f"Total Inference taken: {round(time.time() - s, 3)}s\n")
+        print(f"Total Inference taken: {round(time.time() - s, 3)}s\n")  # Print total inference time
         
         plt.imshow(img)
         plt.show()
-        # break
-        # cv2.imwrite(f"./scripts/output/{idx:04d}.png", cv_img)
+
+    
+    
