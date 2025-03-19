@@ -80,6 +80,7 @@ if __name__ == "__main__":
     control_val = [0, 0, 0, 0] # ax, ay, az, yaw_rate
 
     trajectory = []
+    imagelist = []
 
     dynamics_state = [x, y, z, vx, vy, vz, yaw] # x, y, z, vx, vy, vz, cur_yaw
 
@@ -104,8 +105,10 @@ if __name__ == "__main__":
         x, y, z, vx, vy, vz, yaw = next_state
 
         trajectory.append(x,y,z,yaw)
+        imagelist.append(cv_img)
         
-
+    
+    for idx in range(test_steps):#saving images
         cv2.imwrite(f"./closed_loop/images/{idx:04d}.png", cv_img)
 
     save_trajectory_to_txt(trajectory, filename=track + "_vision_trajectory.txt")
