@@ -29,15 +29,23 @@ To cite it, you can use
     - Plotly
 
 ## Installation
+
 1. Follow tutorial on [NeRFStudio](https://docs.nerf.studio/quickstart/installation.html) to install both Conda and NeRFStudio
-2. Download the track configuration files from [Yan's Google Drive](https://drive.google.com/drive/folders/14IWE-GJ0t2qyS2GCGHhRHTpKWM0x6Jrh?usp=sharing) and place in specific folder hierachy
+2. To get started, clone this repository using Git:
+```bash
+git clone https://github.com/IllinoisReliableAutonomyGroup/FalconGym.git
+cd FalconGym
+pip install -r requirements.txt
+
+```
+3. Download the track configuration files from [Yan's Google Drive](https://drive.google.com/drive/folders/14IWE-GJ0t2qyS2GCGHhRHTpKWM0x6Jrh?usp=sharing) and place in specific folder hierachy
     - FalconGym/
         - scripts/ (from this github repo)
         - circle/
         - uturn/
         - lemniscate/
         - outputs/
-3. To visually inspect the track, you could run
+4. To visually inspect the track, you could run
 ```
 source ~/miniconda3/bin/activate
 conda activate nerfstudio
