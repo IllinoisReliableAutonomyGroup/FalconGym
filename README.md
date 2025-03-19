@@ -125,6 +125,7 @@ Then open the web GUI using the link printed in the terminal
 
 
 ## Submission Files
+Please include the below information in your final submission.
 1. 6 Trajectory.txt files 3 using State-based Controller for all 3 environments and 3 using Vision-based controller for all 3 environments
 2. 6 metrics.json files 3 using State-based Controller for all 3 environments and 3 using Vision-based controller for all 3 environments
 
