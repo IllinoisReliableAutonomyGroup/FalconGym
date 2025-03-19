@@ -8,6 +8,8 @@ For more details on FalconGym, please refere to our [paper](https://arxiv.org/ab
 
 Please refer the video link to get more detailed understanding [video](https://www.youtube.com/watch?v=TuTugNa39xs).
 
+The following is the demo video for circle track using vision controller [Summary video](https://uillinoisedu-my.sharepoint.com/:v:/g/personal/mkg7_illinois_edu/Ef8JGuti9Q9MkdXbGLL4g2QBY8AK-GwkcmIff8aKlB7lWA?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=kVB2Lo).
+
 To cite it, you can use 
 ```
 @misc{miao2025zeroshotsimtorealvisualquadrotor,
@@ -107,7 +109,7 @@ Then open the web GUI using the link printed in the terminal
     - Arguments:
         - `--input`: Path to the image folder.
         - `--output`: Path to save the video file.
-        - `--fps`: Frames per second (default: 30).
+        - `--fps`: Frames per second (default: 20).
     - Example: `python3 ece484_videogenerator.py --input ./closed_loop/images --output ./track_vision_trajectory.mp4 --fps 30
 
 
