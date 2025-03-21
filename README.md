@@ -125,7 +125,7 @@ This section describes the scripts available in FalconGym. Each script has speci
       - **SR** (Success Rate): % of gates successfully crossed.
       - **MGE** (Mean Gate Error): Avg. distance from gate center.
       - **LP** (Lap Time): `0.05 * # frames`.
-    - Benchmark (Circle Track): SR = 100%, MGE = 2.49cm, LP = 11s.
+    - Benchmark: check below
 2. **Gate Detection**
     - Implement `ece484-gate-detection.py`
     - Collect image dataset using ns-renderer.py
