@@ -2,15 +2,13 @@
 
 ### Contact Info: Yan Miao (yanmiao2@illinois.edu)
 
-This repo provides a photorealistic simulation environment (FalconGym), that consists of 3 tracks, namely circle, U-turn and lemniscate (Figure-8). Each track consists of 4 gates arranged in different shapes.
+This repository provides a photorealistic simulation environment (FalconGym), that consists of 3 tracks, namely circle, U-turn and lemniscate (Figure-8). Each track consists of 4 gates arranged in different shapes.
 
-For more details on FalconGym, please refere to our [paper](https://arxiv.org/abs/2503.02198) and [video](https://www.youtube.com/watch?v=TuTugNa39xs). 
+This repository is intended for students working with FalconGym, specifically in ECE 484, to develop and evaluate drone control policies in a photorealistic simulation environment.
 
-Please refer the video link to get more detailed understanding [video](https://www.youtube.com/watch?v=TuTugNa39xs).
+For more details on FalconGym, please refere to our [paper](https://arxiv.org/abs/2503.02198) and [video](https://www.youtube.com/watch?v=TuTugNa39xs). The following is the demo video for circle track using a vision-based controller [demo video](https://uillinoisedu-my.sharepoint.com/:v:/g/personal/mkg7_illinois_edu/Ef8JGuti9Q9MkdXbGLL4g2QBY8AK-GwkcmIff8aKlB7lWA?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=kVB2Lo).
 
-The following is the demo video for circle track using vision controller [Summary video](https://uillinoisedu-my.sharepoint.com/:v:/g/personal/mkg7_illinois_edu/Ef8JGuti9Q9MkdXbGLL4g2QBY8AK-GwkcmIff8aKlB7lWA?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=kVB2Lo).
-
-To cite it, you can use 
+To cite our work, you can use 
 ```
 @misc{miao2025zeroshotsimtorealvisualquadrotor,
       title={Zero-Shot Sim-to-Real Visual Quadrotor Control with Hard Constraints}, 
@@ -22,14 +20,14 @@ To cite it, you can use
       url={https://arxiv.org/abs/2503.02198}, 
 }
 ```
-## Dependencies
+<!-- ## Dependencies
     - python >= 3.8
     - PyTorch 2.1.2
     - CUDA 11.8
     - numpy 1.24.4
     - OpenCV 4.11.0
     - SciPy 1.10.1
-    - Plotly 6.0
+    - Plotly 6.0 -->
 
 ## Installation
 
@@ -56,32 +54,37 @@ ns-viewer --load-config outputs/circle/nerfacto/circle/config.yml
 Then open the web GUI using the link printed in the terminal
 
 ## Scripts Explanation
-1. `drone_dynamics.py`: Double integrator-based drone dynamics
-    -Contains drone dynamics model
-    - Input: state (x, y, z, vx, vy, vz, yaw)  + control (ax, ay, az, yaw_rate)
-    - Output: next state
-    - Note: keep dt = 0.05s
-    - Example: `python3 drone_dynamics.py`
+This section describes the scripts available in FalconGym. Each script has specific functionality for drone simulation, control, and evaluation.
+
+### `drone_dynamics.py` - Double Integrator-Based Drone Dynamics  
+- **Purpose**: Simulates drone dynamics  
+- **Input**:  
+  - State: `(x, y, z, vx, vy, vz, yaw)`  
+  - Control: `(ax, ay, az, yaw_rate)`  
+- **Output**: Next state  
+- **Notes**:  Keep `dt = 0.05s`  
+- **Example Usage**:  `python3 drone_dynamics.py`
+
 
 2. `ns-renderer.py`:  generates RGB images of the environment, useful for dataset creation.
     - Input: camera pose (x, y, z, roll, pitch, yaw)
     - Output: RGB (640x480x3)
     - Note: Modify Track path accordingly
-    - Example: `python3 scripts/ns_renderer.py` (note the file hierachy)
+    - Example: `python3 scripts/ns_renderer.py` (note the file hierarchy)
     - Use this to get a 3d view of each environment, You can also create a training datset for gate detection
 
 3. `ece484-gate-detection.py`: extracts gates from RGB images.
-    - TODO Write gate detection algorithmn here.
+    - TODO Write gate detection algorithm here.
     - Input: RGB (640x480x3)
     - Output: Mask (640x480)
 
 4. `ece484-state-controller.py`: computes control commands based on state estimates.
-    - TODO Write state controller algorithmn here. This script manages drone movements by controlling acceleration and yaw rate based on the current state of the drone.
+    - TODO Write state controller algorithm here. This script manages drone movements by controlling acceleration and yaw rate based on the current state of the drone.
     - Input: state (x, y, z, vx, vy, vz, yaw) + gate poses
     - Output: control (ax, ay, az, yaw_rate)
 
 5. `ece484-vision-controller.py`:  computes control commands from first-person images.
-    - TODO Write your vision controller algorithmn here. This script manages drone movements by controlling acceleration and yaw rate based on the fpv image of the drone.
+    - TODO Write your vision controller algorithm here. This script manages drone movements by controlling acceleration and yaw rate based on the fpv image of the drone.
     - Input: RGB (640x480x3)
     - Output: control (ax, ay, az, yaw_rate)
 
@@ -92,7 +95,7 @@ Then open the web GUI using the link printed in the terminal
     - Use this trajectory txt file for evaluating yourcontroller using [8]
 
 7.  `ece484-vision-closed-loop.py`
-    - This script uses gate detection algorithmn from `ece484-gate-detection.py` and vision controller from `ece484-vision-controller.py`. Complete both the scripts before running this
+    - This script uses gate detection algorithm from `ece484-gate-detection.py` and vision controller from `ece484-vision-controller.py`. Complete both the scripts before running this
     -No edits are required in this script.
     - Run `ece484-state-controller.py` in closed loop.
     - Output an image folder, a trajectory txt file and a mp4 video 
@@ -146,10 +149,23 @@ Then open the web GUI using the link printed in the terminal
 ![Circle Track](images/tracks.png)
 
 
-## Submission Files
+## Submission File & Yan's Benchmark
+
+### State-based Controller Benchmark
+|          |   SR    |   MGE(cm) |  LP(s)  |
+| -------- | ------- | --------  | ------- |
+| Circle   | 100%    |   2.47    |    11   |
+|Lemniscate| 100%    |   5.11    |    15   |
+| Uturn    | 100%    |   3.42    |    7    |
+
+### Vision-based Controller Benchmark
+|          |   SR    |   MGE(cm) |  LP(s)  |
+| -------- | ------- | --------  | ------- |
+| Circle   | 100%    |   6.25    |    11   |
+|Lemniscate| 100%    |   5.13    |    15   |
+| Uturn    | 100%    |   10.1    |    7    |
+
 Please include the below information in your final submission.
 1. 6 Trajectory.txt files 3 using State-based Controller for all 3 environments and 3 using Vision-based controller for all 3 environments
 2. 6 metrics.json files 3 using State-based Controller for all 3 environments and 3 using Vision-based controller for all 3 environments
-3. 3 MP4 video files generated using Vision-based controller for each environment [Summary video](https://uillinoisedu-my.sharepoint.com/:v:/g/personal/mkg7_illinois_edu/Ef8JGuti9Q9MkdXbGLL4g2QBY8AK-GwkcmIff8aKlB7lWA?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=kVB2Lo).
-
-
+3. 3 MP4 video files generated using Vision-based controller for each environment.
