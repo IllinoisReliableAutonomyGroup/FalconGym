@@ -54,67 +54,100 @@ ns-viewer --load-config outputs/circle/nerfacto/circle/config.yml
 ```
 Then open the web GUI using the link printed in the terminal
 
+NOTE: To visualize the lemniscate or U-turn track, update the command as follows
+```
+ns-viewer --load-config outputs/TRACK/nerfacto/TRACK/config.yml
+```
+Replace TRACK with either lemniscate or uturn as needed.
+
+![](images/gates_image.png)
+
+
 ## Scripts Explanation
 This section describes the scripts available in FalconGym. Each script has specific functionality for drone simulation, control, and evaluation.
 
 ### `drone_dynamics.py` - Double Integrator-Based Drone Dynamics  
 - **Purpose**: Simulates drone dynamics  
 - **Input**:  
-  - State: `(x, y, z, vx, vy, vz, yaw)`  
-  - Control: `(ax, ay, az, yaw_rate)`  
+    - State: `(x, y, z, vx, vy, vz, yaw)`  
+    - Control: `(ax, ay, az, yaw_rate)`  
 - **Output**: Next state  
 - **Notes**:  Keep `dt = 0.05s`  
 - **Example Usage**:  `python3 drone_dynamics.py`
 
 
-2. `ns-renderer.py`:  generates RGB images of the environment, useful for dataset creation.
-    - Input: camera pose (x, y, z, roll, pitch, yaw)
-    - Output: RGB (640x480x3)
-    - Note: Modify Track path accordingly
-    - Example: `python3 scripts/ns_renderer.py` (note the file hierarchy)
-    - Use this to get a 3d view of each environment, You can also create a training datset for gate detection
+### `ns-renderer.py`:  generates RGB images of the environment, useful for dataset creation.
+- **Purpose**: Environment overview, Use this to get a 3d view of each environment, You can also create a training datset for gate detection.
+- **Input**: camera pose (x, y, z, roll, pitch, yaw)
+- **Output**: RGB image (640x480x3)
+- **Notes**: Modify Track path accordingly
+- **Example Usage**: `python3 scripts/ns_renderer.py --track_name TRACK` (note the file hierarchy, TRACK = circle, lemniscate, uturn)
+    
+### `ece484-gate-detection.py`: extracts gates from RGB images.
+- **TODO**: Write gate detection algorithm here.
+- **Purpose**: Detects gates, generates a segmented binary mask of the gate.
+- **Input**: RGB (640x480x3)
+- **Output**: Mask (640x480)
+- **Example Usage**: `python3 ece484-gate-detection.py`
+- **Notes**: The functions in this file will be used by `ece484-vision-controller.py` and `ece484-vision-closed-loop.py`.
 
-3. `ece484-gate-detection.py`: extracts gates from RGB images.
-    - TODO Write gate detection algorithm here.
-    - Input: RGB (640x480x3)
-    - Output: Mask (640x480)
+### `ece484-state-controller.py`: computes control commands based on state estimates.
+- **TODO**: Write state controller algorithm here. This script manages drone movements by controlling acceleration and yaw rate based on the current state of the drone.
+- **Input**: state (x, y, z, vx, vy, vz, yaw) + gate poses
+- **Output**: control (ax, ay, az, yaw_rate)
+- **Notes**: The controller function in this file will be used by `ece484-state-closed-loop.py`.
 
-4. `ece484-state-controller.py`: computes control commands based on state estimates.
-    - TODO Write state controller algorithm here. This script manages drone movements by controlling acceleration and yaw rate based on the current state of the drone.
-    - Input: state (x, y, z, vx, vy, vz, yaw) + gate poses
-    - Output: control (ax, ay, az, yaw_rate)
+### `ece484-vision-controller.py`:  computes control commands from first-person images.
+- **TODO**: Write your vision controller algorithm here. This script manages drone movements by controlling acceleration and yaw rate based on the fpv image of the drone.
+- **Input**: 
+    - RGB Image (640x480x3)
+    - Binary mask (640x480x3) (Taken from  `ece484-gate-detection.py`)
+- **Output**: control (ax, ay, az, yaw_rate)
 
-5. `ece484-vision-controller.py`:  computes control commands from first-person images.
-    - TODO Write your vision controller algorithm here. This script manages drone movements by controlling acceleration and yaw rate based on the fpv image of the drone.
-    - Input: RGB (640x480x3)
-    - Output: control (ax, ay, az, yaw_rate)
-
-6.  `ece484-state-closed-loop.py`
+###  `ece484-state-closed-loop.py`
+    
+- **Purpose**: This script runs `ece484-state-controller.py` in closed loop. It simulates the drone's dynamics, and saves the trajectory to a text file.
+- **Input**:
+    - State: `(x, y, z, vx, vy, vz, yaw)` (Taken from `drone_dynamics.py`).
+    - Control: `(ax, ay, az, yaw_rate)`  (Taken from `ece484-state-controller.py`).
+- **Output**: A trajectory.txt file. Contains (x,y,z,Yaw)
+- **Example Usage**: `python3 ece484-state-closed-loop.py --track-name TRACK`. (TRACK = Circle_Track, Uturn_Track, Lemniscate_Track)
+- **Notes**: 
+    - Use this trajectory txt file for evaluating your controller using `ece484_evaluate.py`.
     - No edits required, run this after finishing ece484_statecontroller.py. 
-    - This script runs `ece484-state-controller.py` in closed loop. It simulates the drone's dynamics, and saves the trajectory to a text file.
-    - Output: trajectory txt
-    - Use this trajectory txt file for evaluating yourcontroller using [8]
 
-7.  `ece484-vision-closed-loop.py`
-    - This script uses gate detection algorithm from `ece484-gate-detection.py` and vision controller from `ece484-vision-controller.py`. Complete both the scripts before running this
-    -No edits are required in this script.
-    - Run `ece484-state-controller.py` in closed loop.
-    - Output an image folder, a trajectory txt file and a mp4 video 
+###  `ece484-vision-closed-loop.py`
+- **Purpose**: This script runs `ece484-vision-controller.py` in closed loop. It uses gate detection algorithm from `ece484-gate-detection.py` and vision controller from `ece484-vision-controller.py`. 
+- **Input**:
+    - State: `(x, y, z, vx, vy, vz, yaw)` (Taken from `drone_dynamics.py`).
+    - Control: `(ax, ay, az, yaw_rate)`  (Taken from `ece484-vision-controller.py`).
+- **Output**:
+    - An image folder.
+    - A trajectory.txt file. contains (x,y,z,Yaw)
+    - A mp4 video.
+- **Example Usage**: `python3 ece484-vision-closed-loop.py --track-name TRACK`. (TRACK = Circle_Track, Uturn_Track, Lemniscate_Track)
+- **Notes**: 
+    - Use this trajectory txt file for evaluating your controller using `ece484_evaluate.py`.
+    - No edits required, run this after finishing ece484_statecontroller.py. 
 
-8.  `ece484_evaluate.py`: computes metrics gate errors, time, and success rate.
-    - Run `python3 ece484_evaluate.py --track-name Circle_Track --trajectory-path circle_traj.txt --visflag True --metricsflag True` take track name and trajectory txt file as arguments flags are optional. (make your trajectory.txt file by running 6 or 7)
-    - mean gate error, mean time, success rate and Trajectory Visualization
-    - outputs a metrics json file and plot of the trajectory.
-    - refer to sample_results folder
+###  `ece484_evaluate.py`: computes metrics gate errors, time, and success rate.
+ - **Purpose**: TO evaluate controllers performance in each track using metrics MGE, LT, SR and Trajectory Visualization. 
+ - **Input**: Trajectory.txt file generated from `ece484-vision-closed-loop.py` or `ece484-state-closed-loop.py`.
+ - **Output**:
+    - metrics json file.
+    - plot of the trajectory.
+- **Example Usage**: `python3 ece484_evaluate.py --track-name Circle_Track --trajectory-path circle_traj.txt --visflag True --metricsflag True` take track name and trajectory txt file as arguments flags are optional.
 
-9. `ece484_videogenerator.py`: Generates a video from sequentially named images.
-    - Input: Folder containing PNG images.
-    - Output: MP4 video file.
-    - Arguments:
-        - `--input`: Path to the image folder.
-        - `--output`: Path to save the video file.
-        - `--fps`: Frames per second (default: 20).
-    - Example: `python3 ece484_videogenerator.py --input ./closed_loop/images --output ./track_vision_trajectory.mp4 --fps 20
+### `ece484_videogenerator.py`: Generates a video from sequentially named images.
+ - **Purpose**: Used to generate video using images of the scene.
+ - **Input**:
+    - Folder containing PNG images.
+ - **Output**: MP4 video file.
+- **Example Usage**: `python3 ece484_videogenerator.py --input ./closed_loop/images --output ./track_vision_trajectory.mp4 --fps 20`.
+- **Notes**
+    - `--input`: Path to the image folder.
+    - `--output`: Path to save the video file.
+    - `--fps`: Frames per second (default: 20).
 
 
 ## Tasks for ECE 484 students
@@ -145,9 +178,9 @@ This section describes the scripts available in FalconGym. Each script has speci
 
 
 ## Env Explanation
-![](images/gates_image.png)
 
 ![Circle Track](images/tracks.png)
+
 
 
 ## Submission File & Yan's Benchmark
