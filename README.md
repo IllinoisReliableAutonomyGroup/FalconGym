@@ -56,7 +56,7 @@ Then open the web GUI using the link printed in the terminal
 
 NOTE: To visualize the lemniscate or U-turn track, update the command as follows
 ```
-ns-viewer --load-config outputs/TRACK/nerfacto/TRACK/config.yml
+ns-viewer --load-config outputs/'TRACK'/nerfacto/'TRACK'/config.yml
 ```
 Replace TRACK with either lemniscate or uturn as needed.
 
