@@ -134,7 +134,7 @@ This section describes the scripts available in FalconGym. Each script has speci
  - **Purpose**: TO evaluate controllers performance in each track using metrics MGE, LT, SR and Trajectory Visualization. 
  - **Input**: Trajectory.txt file generated from `ece484-vision-closed-loop.py` or `ece484-state-closed-loop.py`.
  - **Output**:
-    - metrics json file.
+    - metrics.json file.
     - plot of the trajectory.
 - **Example Usage**: `python3 ece484_evaluate.py --track-name Circle_Track --trajectory-path circle_traj.txt --visflag True --metricsflag True` take track name and trajectory txt file as arguments flags are optional.
 
@@ -200,6 +200,17 @@ This section describes the scripts available in FalconGym. Each script has speci
 | Uturn    | 100%    |   10.1    |    7    |
 
 Please include the below information in your final submission.
-1. 6 Trajectory.txt files 3 using State-based Controller for all 3 environments and 3 using Vision-based controller for all 3 environments
-2. 6 metrics.json files 3 using State-based Controller for all 3 environments and 3 using Vision-based controller for all 3 environments
-3. 3 MP4 video files generated using Vision-based controller for each environment.
+1. TASK1: State Controller
+    - **CIRCLE** Trajectory.txt, metrics.json.
+    - **UTURN** Trajectory.txt, metrics.json.
+    - **LEMNISCATE** Trajectory.txt, metrics.json.
+2. TASK4: Vision COntroller
+    - **CIRCLE** Trajectory.txt, metrics.json and MP4 Video file.
+    - **UTURN** Trajectory.txt, metrics.json and MP4 Video file.
+    - **LEMNISCATE** Trajectory.txt, metrics.json and MP4 Video file.
+
+-**NOTE**:
+    - Trajectory.txt generated from `ece484-state-closed-loop.py` or `ece484-vision-closed-loop.py`
+    - metrics.json generated from `ece484_evaluate.py`.
+    - MP4 Video file generated from `ece484_videogenerator.py`.
+
