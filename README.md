@@ -34,6 +34,7 @@ To cite our work, you can use
 1. Follow tutorial on [NeRFStudio](https://docs.nerf.studio/quickstart/installation.html) to install both Conda and NeRFStudio
 2. Clone this repository using Git:
 ```bash
+conda activate nerfstudio
 git clone https://github.com/IllinoisReliableAutonomyGroup/FalconGym.git
 cd FalconGym
 pip install -r requirements.txt
