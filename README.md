@@ -209,8 +209,8 @@ Please include the below information in your final submission.
     - **UTURN** Trajectory.txt, metrics.json and MP4 Video file.
     - **LEMNISCATE** Trajectory.txt, metrics.json and MP4 Video file.
 
--**NOTE**:
-    - Trajectory.txt generated from `ece484-state-closed-loop.py` or `ece484-vision-closed-loop.py`
-    - metrics.json generated from `ece484_evaluate.py`.
-    - MP4 Video file generated from `ece484_videogenerator.py`.
+**NOTE**:
+- Trajectory.txt generated from `ece484-state-closed-loop.py` or `ece484-vision-closed-loop.py`
+- metrics.json generated from `ece484_evaluate.py`.
+- MP4 Video file generated from `ece484_videogenerator.py`.
 
