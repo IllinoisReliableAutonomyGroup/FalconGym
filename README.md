@@ -22,11 +22,12 @@ To cite our work, you can use
 ## Installation
 
 1. Follow tutorial on [NeRFStudio](https://docs.nerf.studio/quickstart/installation.html) to install both Conda and NeRFStudio
-2. Clone this repository using Git:
+2. Clone this repository using Git and switch to Stock_Pavilion branch:
 ```bash
 conda activate nerfstudio
 git clone https://github.com/IllinoisReliableAutonomyGroup/FalconGym.git
 cd FalconGym
+git checkout Stock_Pavilion
 ```
 3. Download the Stock Pavilion configuration files from [Yan's Google Drive](https://drive.google.com/drive/folders/1jTHsK4VBWPVTSzpj2DqrC5h4JKxUhX1u?usp=sharing) and place in specific folder hierachy
     - FalconGym (Stock_Pavilion branch)/
