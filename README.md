@@ -30,6 +30,10 @@ To cite our work, you can use
     - Plotly 6.0 -->
 
 ## Installation
+ 
+#### Update 5/12/2025: We updated the 3 tracks originally in NeRF to have a GSplat version, which has ~0.005s rendering (50x speed up than NeRF & better image quality). The gate positions is yet to be determined. If you wish to use the latest GSplat setup, use this [GSplat Link](https://drive.google.com/drive/folders/1n5qTuD85ZZjfogJONKj3vY6bCRP843Gb?usp=sharing) rather than the link below in Step 3. 
+---
+
 
 1. Follow tutorial on [NeRFStudio](https://docs.nerf.studio/quickstart/installation.html) to install both Conda and NeRFStudio
 2. Clone this repository using Git:
