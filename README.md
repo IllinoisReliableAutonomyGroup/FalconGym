@@ -1,6 +1,8 @@
 # FalconGym
-
+### **Latest News: [06/2025] This work has been accepted to IROS 2025!**
 ### Contact Info: Yan Miao (yanmiao2@illinois.edu)
+
+
 
 This repository provides a photorealistic simulation environment (FalconGym), that consists of 3 tracks, namely circle, U-turn and lemniscate (Figure-8). Each track consists of 4 gates arranged in different shapes.
 
