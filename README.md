@@ -12,15 +12,15 @@ For more details on FalconGym, please refere to our [paper](https://arxiv.org/ab
 
 To cite our work, you can use 
 ```
-@misc{miao2025zeroshotsimtorealvisualquadrotor,
-      title={Zero-Shot Sim-to-Real Visual Quadrotor Control with Hard Constraints}, 
-      author={Yan Miao and Will Shen and Sayan Mitra},
-      year={2025},
-      eprint={2503.02198},
-      archivePrefix={arXiv},
-      primaryClass={cs.RO},
-      url={https://arxiv.org/abs/2503.02198}, 
-}
+@InProceedings{Miao:IROS2025,
+  author       = {Yan Miao and Will Shen and Sayan Mitra},
+  title        = {Zero-Shot Sim-to-Real Visual Quadrotor Control with Hard Constraints},
+  booktitle    = {IEEE/RSJ International Conference on Intelligent Robots and Systems},
+  year         = {2025},
+  keywords     = {robotics, NeRF, aerial},
+  address      = {Hangzhou, China},
+  month        =  {October}
+ }
 ```
 <!-- ## Dependencies
     - python >= 3.8
